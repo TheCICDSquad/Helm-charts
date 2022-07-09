@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deployment.name }}
+  labels:
+    app: nginx
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: docker.io/{{ .Values.deployment.name }}:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: {{.Values.VolumeMounts.mountpaths}}
+          name: nginx-conf
+          subPath: index.html
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: nginx-index-html-configmap
+
